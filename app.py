@@ -10,7 +10,8 @@ from tensorflow.keras.models import load_model
 # ---------------------------
 @st.cache_resource
 def load_ecg_model():
-    return load_model("ecg_model.h5")
+    return load_model("cnn_ecg.h5")
+
 
 model = load_ecg_model()
 
@@ -25,7 +26,7 @@ CLASS_NAMES = [
 # ---------------------------
 # Sidebar
 # ---------------------------
-st.sidebar.title("📊 ECG Dashboard")
+st.sidebar.title("ECG Dashboard")
 st.sidebar.write("Upload an ECG signal file and classify arrhythmias.")
 uploaded_file = st.sidebar.file_uploader("Upload ECG CSV", type=["csv"])
 
@@ -35,7 +36,7 @@ st.sidebar.info("Model: CNN trained on ECG waveforms\nVisualization: Streamlit D
 # ---------------------------
 # Main App Layout
 # ---------------------------
-st.title("❤️ ECG Arrhythmia Classification")
+st.title("ECG Arrhythmia Classification")
 st.write("This dashboard visualizes ECG signals and predicts arrhythmia types using a deep learning model.")
 
 if uploaded_file is not None:
@@ -69,7 +70,7 @@ if uploaded_file is not None:
     # ---------------------------
     # Prediction Results
     # ---------------------------
-    st.subheader("🧾 Prediction Results")
+    st.subheader("Prediction Results")
     st.success(f"**Predicted Class:** {pred_class}")
 
     st.subheader("Class Probabilities")
@@ -77,4 +78,4 @@ if uploaded_file is not None:
     st.bar_chart(probs)
 
 else:
-    st.warning("👈 Please upload an ECG CSV file from the sidebar to start.")
+    st.warning("Please upload an ECG CSV file from the sidebar to start.")
