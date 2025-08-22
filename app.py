@@ -44,7 +44,7 @@ if uploaded_file is not None:
     data = pd.read_csv(uploaded_file)
 
     # Assume ECG is in first column
-    ecg_signal = data.iloc[:, 0].values
+    ecg_signal = data.iloc[:, 1].values
 
     # ---------------------------
     # ECG Plot
@@ -60,8 +60,18 @@ if uploaded_file is not None:
     # ---------------------------
     # Preprocess & Predict
     # ---------------------------
-    signal = ecg_signal[:500]  # adjust window size as per training
+
+    signal = np.array(ecg_signal)
+
+    if len(signal) < 500:
+        # pad with zeros at the end
+        signal = np.pad(signal, (0, 500 - len(signal)), mode='constant')
+    elif len(signal) > 500:
+        # truncate
+        signal = signal[:500]
+
     signal = signal.reshape(1, 500, 1)
+
     signal = signal.astype("float32") / np.max(np.abs(signal))
 
     prediction = model.predict(signal)
