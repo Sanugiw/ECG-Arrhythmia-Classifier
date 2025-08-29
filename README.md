@@ -5,7 +5,7 @@ A **1D Convolutional Neural Network (CNN)** is trained on ECG signals to detect 
 
 ---
 
-## 🚀 Project Workflow
+## Project Workflow
 
 1. **Data Preprocessing**  
    - ECG signals (from MIT-BIH dataset or CSV files) are normalized.  
@@ -28,7 +28,7 @@ A **1D Convolutional Neural Network (CNN)** is trained on ECG signals to detect 
 
 ---
 
-## 🧪 Arrhythmia Classes
+## Arrhythmia Classes
 
 The model can classify the following rhythms:
 - **Normal Sinus Rhythm (NSR)**  
@@ -38,7 +38,7 @@ The model can classify the following rhythms:
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```
 
@@ -58,7 +58,7 @@ The model can classify the following rhythms:
 
 ---
 
-## 📊 Model Architecture (1D CNN)
+## Model Architecture
 
 ```python
 model = Sequential([
@@ -85,7 +85,7 @@ model = Sequential([
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 1. Clone the repository:
 
@@ -122,7 +122,7 @@ model = Sequential([
 
 ---
 
-## 📊 Usage
+## Usage
 
 * Upload your **ECG CSV file** in the sidebar (single column of ECG values).
 * The app will:
@@ -133,7 +133,7 @@ model = Sequential([
 
 ---
 
-## 📈 Example Output
+## Example Output
 
 * **Input ECG Plot:**
   A waveform visualization of the uploaded ECG signal.
@@ -154,7 +154,7 @@ model = Sequential([
 
 ---
 
-## 🧰 Tools & Technologies
+## Tools & Technologies
 
 * Python
 * TensorFlow / Keras
@@ -164,14 +164,13 @@ model = Sequential([
 
 ---
 
-## 🔮 Future Improvements
+## Future Improvements
 
-* 🔍 Integrate **Grad-CAM** for interpretability (highlighting important ECG regions).
-* 📊 Support **multi-lead ECG inputs**.
-* 🌐 Deploy app on **Streamlit Cloud / Hugging Face Spaces**.
-* 📂 Extend arrhythmia coverage using **MIT-BIH Arrhythmia Database**.
+* Integrate **Grad-CAM** for interpretability (highlighting important ECG regions).
+* Support **multi-lead ECG inputs**.
+* Deploy app on **Streamlit Cloud / Hugging Face Spaces**.
+* Extend arrhythmia coverage using **MIT-BIH Arrhythmia Database**.
 
 ---
 
-Would you like me to also **write the `requirements.txt`** for you (TensorFlow, Streamlit, etc.) so anyone cloning your repo can run it instantly?
-```
+
