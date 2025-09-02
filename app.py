@@ -10,7 +10,7 @@ from tensorflow.keras.models import load_model
 # ---------------------------
 @st.cache_resource
 def load_ecg_model():
-    return load_model("cnn_ecg.h5")
+    return load_model("models/cnn_ecg_final.h5")
 
 model = load_ecg_model()
 
