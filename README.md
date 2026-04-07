@@ -136,7 +136,7 @@ Users can:
 
 ### ⚖️ Class Imbalance Insight
 
-* Dataset is inherently imbalanced
+* The dataset is inherently imbalanced
 * Majority classes: **N, Q**
 * Minority classes: **F, S**
 
@@ -144,12 +144,6 @@ Despite this, the model achieves:
 
 * Stable macro performance (**F1 ≈ 0.88**)
 * Good recall for minority classes
-
----
-
-## 📈 Visualization
-
-![Grad-CAM Visualization](images/gradcam_results.png)
 
 ---
 
