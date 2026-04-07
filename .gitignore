@@ -1,0 +1,17 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+data/
+models/
+*.h5
+*.keras
+*.npy
+*.npz
+.vscode/
+.DS_Store
+Thumbs.db
+!app/*.csv
