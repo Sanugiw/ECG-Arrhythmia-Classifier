@@ -136,7 +136,7 @@ Users can:
 
 ### ⚖️ Class Imbalance Insight
 
-* Dataset is inherently imbalanced
+* The dataset is inherently imbalanced
 * Majority classes: **N, Q**
 * Minority classes: **F, S**
 
@@ -156,15 +156,7 @@ Despite this, the model achieves:
 ## 📁 Repository Structure
 
 ```
-├── model_training/
-│   ├── train_model.py
-│   ├── preprocessing.py
-│   └── cnn_ecg_best.keras
-│
-├── explainability/
-│   ├── grad_cam.py
-│   └── visualization.py
-│
+├── model_training.ipynb
 ├── app/
 │   ├── app.py
 │   └── sample_ecg.csv
@@ -181,7 +173,7 @@ Despite this, the model achieves:
 ## ⚙️ Installation
 
 ```bash
-git clone https://github.com/your-username/ecg-arrhythmia-dashboard.git
+git clone https://github.com/Sanugiw/ecg-arrhythmia-dashboard.git
 cd ecg-arrhythmia-dashboard
 
 python -m venv .venv
