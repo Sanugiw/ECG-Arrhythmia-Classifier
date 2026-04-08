@@ -147,18 +147,16 @@ Despite this, the model achieves:
 
 ---
 
+## 📈 Visualization
+
+![Grad-CAM Visualization](images/gradcam_results.png)
+
+---
+
 ## 📁 Repository Structure
 
 ```
-├── model_training/
-│   ├── train_model.py
-│   ├── preprocessing.py
-│   └── cnn_ecg_best.keras
-│
-├── explainability/
-│   ├── grad_cam.py
-│   └── visualization.py
-│
+├── model_training.ipynb
 ├── app/
 │   ├── app.py
 │   └── sample_ecg.csv
@@ -175,7 +173,7 @@ Despite this, the model achieves:
 ## ⚙️ Installation
 
 ```bash
-git clone https://github.com/your-username/ecg-arrhythmia-dashboard.git
+git clone https://github.com/Sanugiw/ecg-arrhythmia-dashboard.git
 cd ecg-arrhythmia-dashboard
 
 python -m venv .venv
