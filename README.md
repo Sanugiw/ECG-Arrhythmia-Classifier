@@ -266,17 +266,6 @@ To reproduce:
 
 ---
 
-## 🔮 Future Improvements
-
-* Multi-lead ECG support
-* Transformer-based architectures
-* Attention mechanisms for better interpretability
-* Patient-wise split to avoid data leakage
-* Real-time ECG streaming
-* Cloud deployment (Streamlit Cloud / Hugging Face Spaces)
-
----
-
 ## 📌 Summary
 
 This project integrates:
