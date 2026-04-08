@@ -1,6 +1,6 @@
 # 🫀 ECG Arrhythmia Classification with Explainable AI Dashboard
 
-An end-to-end **ECG Arrhythmia Classification system** combining **deep learning** with **Explainable AI (Grad-CAM)** and an interactive **Streamlit dashboard**.
+An end-to-end **ECG Arrhythmia Classification system** combining **deep learning**, **Explainable AI (Grad-CAM)**, and an interactive **Streamlit dashboard**.
 
 This system not only predicts arrhythmia classes but also **explains model decisions by highlighting important regions of the ECG signal**, improving transparency and clinical relevance.
 
@@ -13,96 +13,111 @@ This system not only predicts arrhythmia classes but also **explains model decis
 * **Grad-CAM visualization** for interpretability
 * Interactive **Streamlit dashboard**
 * Real-time ECG upload, prediction, and explanation
-* Deployment-ready pipeline
+* End-to-end pipeline from raw signal → prediction → explanation
 
 ---
 
 ## 🧠 Project Workflow
 
-### 1. Data Preprocessing
+```text
+Raw ECG → Filtering → Segmentation → Label Mapping → CNN → Prediction → Grad-CAM → Dashboard
+```
 
-* Dataset: MIT-BIH Arrhythmia Database
-* ECG beats extracted using R-peak annotations
-* Bandpass filtering applied (0.5–40 Hz) to remove noise
-* Each beat segmented using:
+---
+
+## 📂 Dataset
+
+This project uses the MIT-BIH Arrhythmia Database from PhysioNet:
+
+🔗 [https://physionet.org/content/mitdb/](https://physionet.org/content/mitdb/)
+
+### Download Dataset
+
+```python
+import wfdb
+
+wfdb.dl_database("mitdb", "data/raw/mitdb")
+```
+
+### Or Stream Directly
+
+```python
+record = wfdb.rdrecord('100', pn_dir='mitdb')
+annotation = wfdb.rdann('100', 'atr', pn_dir='mitdb')
+```
+
+> ⚠️ Dataset is not included in this repository due to size constraints.
+
+---
+
+## 🧪 Data Preprocessing
+
+* Bandpass filtering applied (**0.5–40 Hz**)
+* R-peak based segmentation:
 
   * **0.2 s before R-peak**
   * **0.4 s after R-peak**
-* Resulting input size: **216 samples per beat**
+* Input size: **216 samples per beat (360 Hz)**
 * Signals normalized to zero mean and unit variance
 
 ---
 
-### 2. Dataset Labeling
+## 🏷 Dataset Labeling (AAMI Standard)
 
-Raw MIT-BIH annotations (23 classes) are grouped into **5 clinically meaningful categories (AAMI standard)**:
+Raw MIT-BIH annotations (23 classes) are grouped into 5 clinically meaningful categories:
 
 | Class | Description                |
 | ----- | -------------------------- |
-| **N** | Normal beat                |
+| **N** | Normal                     |
 | **S** | Supraventricular           |
 | **V** | Ventricular                |
-| **F** | Fusion beat                |
+| **F** | Fusion                     |
 | **Q** | Unknown / Paced / Artifact |
-
-This reduces class sparsity and improves model generalization.
 
 ---
 
-### 3. Model Architecture (1D CNN)
+## 🧠 Model Architecture (1D CNN)
 
-A deep learning model designed to learn **ECG morphology and temporal patterns**.
-
-```
+```text
 Conv1D → BatchNorm → MaxPooling  
 Conv1D → BatchNorm → MaxPooling  
 Conv1D → BatchNorm → GlobalAvgPooling  
 Dense → Dropout → Softmax
 ```
 
-#### Training Details
+### Training Details
 
 * Optimizer: **Adam**
 * Learning rate: **1e-3**
 * Loss: **Categorical Crossentropy**
 * Batch size: **64**
-* Epochs: **30 (Early Stopping applied)**
+* Epochs: **30 (Early stopping applied)**
 * Class imbalance handled using **class weights**
 * Train/Validation/Test split: **80 / 10 / 10 (stratified)**
 
 ---
 
-### 4. Explainability (Grad-CAM)
+## 🔍 Explainability (Grad-CAM)
 
 Grad-CAM computes gradients of the target class score with respect to feature maps in the final convolutional layer.
-These gradients are used to generate a **temporal importance map**, highlighting regions that most influenced the prediction.
 
-#### Key Interpretations
+This produces a **temporal importance map** highlighting which parts of the ECG signal influenced the prediction.
 
-* **Normal (N):** Focus on sharp QRS complex
-* **Ventricular (V):** Broad QRS morphology
-* **Supraventricular (S):** Attention includes pre-QRS region (P-wave)
-* **Fusion (F):** Mixed waveform attention
-* **Unknown/Paced (Q):** Spike-like features
+### Key Observations
+
+* **N (Normal):** Focus on sharp QRS complex
+* **V (Ventricular):** Broad QRS region
+* **S (Supraventricular):** Attention includes pre-QRS (P-wave)
+* **F (Fusion):** Mixed morphology attention
+* **Q (Unknown):** Irregular or spike-like regions
 
 👉 The model learns **physiological patterns, not noise**
 
 ---
 
-### 5. Streamlit Deployment
-
-Users can:
-
-* Upload ECG CSV files (single column)
-* Visualize waveform
-* View predicted class and confidence
-* See Grad-CAM explanation overlay
-
----
-
 ## 📊 Results & Performance
 
-### Overall Performance
+### Overall
 
 | Metric                | Value      |
 | --------------------- | ---------- |
@@ -116,34 +131,20 @@ Users can:
 
 | Class | Precision | Recall | F1-score | Support |
 | ----- | --------- | ------ | -------- | ------- |
-| **F** | 0.83      | 0.75   | 0.79     | 40      |
-| **N** | 0.96      | 0.94   | 0.95     | 1000    |
-| **Q** | 0.97      | 0.96   | 0.96     | 773     |
-| **S** | 0.73      | 0.85   | 0.79     | 93      |
-| **V** | 0.91      | 0.95   | 0.93     | 278     |
+| F     | 0.83      | 0.75   | 0.79     | 40      |
+| N     | 0.96      | 0.94   | 0.95     | 1000    |
+| Q     | 0.97      | 0.96   | 0.96     | 773     |
+| S     | 0.73      | 0.85   | 0.79     | 93      |
+| V     | 0.91      | 0.95   | 0.93     | 278     |
 
 ---
 
-### 🔍 Key Observations
+### 🔍 Key Insights
 
-* High overall accuracy with strong generalization
-* Excellent performance on **N** and **Q** classes
-* Strong detection of **ventricular beats (V)**
-* Slight confusion between **S and N** due to morphological similarity
-* **Fusion (F)** remains challenging due to limited samples
-
----
-
-### ⚖️ Class Imbalance Insight
-
-* The dataset is inherently imbalanced
-* Majority classes: **N, Q**
-* Minority classes: **F, S**
-
-Despite this, the model achieves:
-
-* Stable macro performance (**F1 ≈ 0.88**)
-* Good recall for minority classes
+* Strong performance on **N and Q classes**
+* High recall for **ventricular beats (V)**
+* Confusion between **S and N** due to similar morphology
+* Lower performance for **F** due to limited samples
 
 ---
 
@@ -155,8 +156,9 @@ Despite this, the model achieves:
 
 ## 📁 Repository Structure
 
-```
+```text
 ├── model_training.ipynb
+├── preprocessing.py
 ├── app/
 │   ├── app.py
 │   └── sample_ecg.csv
@@ -173,8 +175,8 @@ Despite this, the model achieves:
 ## ⚙️ Installation
 
 ```bash
-git clone https://github.com/Sanugiw/ecg-arrhythmia-dashboard.git
-cd ecg-arrhythmia-dashboard
+git clone https://github.com/Sanugiw/ECG-Arrhythmia-Classifier.git
+cd ECG-Arrhythmia-Classifier
 
 python -m venv .venv
 .venv\Scripts\activate
@@ -184,15 +186,35 @@ pip install -r requirements.txt
 
 ---
 
-## 🏋️ Train the Model
+## 🚀 End-to-End Pipeline
+
+### 1. Preprocess Data
+
+```bash
+python preprocessing.py
+```
+
+Generates:
+
+* `data/processed/beats.npy`
+* `data/processed/labels.npy`
+
+---
+
+### 2. Train Model
 
 ```bash
 python model_training/train_model.py
 ```
 
+Outputs:
+
+* `models/cnn_ecg_best.keras`
+* `models/cnn_ecg_final.keras`
+
 ---
 
-## ▶️ Run the App
+### 3. Run the App
 
 ```bash
 streamlit run app/app.py
@@ -200,15 +222,37 @@ streamlit run app/app.py
 
 ---
 
+### 4. Test the App
+
+Upload a CSV:
+
+```csv
+ecg
+0.01
+0.02
+-0.03
+...
+```
+
+Or use:
+
+```
+app/sample_ecg.csv
+```
+
+---
+
 ## 🧪 Usage
 
-1. Upload ECG CSV (single column)
-2. View:
+1. Launch Streamlit app
+2. Upload ECG CSV (single column)
+3. Select ECG column
+4. View:
 
    * ECG waveform
    * Predicted class
-   * Confidence score
-   * Grad-CAM explanation
+   * Confidence scores
+   * Grad-CAM visualization
 
 ---
 
@@ -217,17 +261,33 @@ streamlit run app/app.py
 * Python
 * TensorFlow / Keras
 * NumPy, Pandas
+* SciPy
 * Matplotlib
 * Streamlit
+* WFDB
+
+---
+
+## 🔁 Reproducibility
+
+* Fixed random seed for consistent results
+* Stratified splits preserve class distribution
+* Class imbalance handled via weighted loss
+
+To reproduce:
+
+1. Download dataset
+2. Run preprocessing
+3. Train model
 
 ---
 
 ## 🔮 Future Improvements
 
 * Multi-lead ECG support
-* Transformer-based temporal models
-* Attention mechanisms for improved interpretability
-* Patient-wise data splitting to avoid leakage
+* Transformer-based architectures
+* Attention mechanisms for better interpretability
+* Patient-wise split to avoid data leakage
 * Real-time ECG streaming
 * Cloud deployment (Streamlit Cloud / Hugging Face Spaces)
 
@@ -243,8 +303,9 @@ This project integrates:
 
 to create a system that is both **accurate and interpretable**, suitable for:
 
-* clinical decision support
-* biomedical research
-* educational tools
+* Clinical decision support
+* Biomedical research
+* Educational tools
 
 ---
+
