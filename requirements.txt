@@ -1,24 +1,23 @@
-# Core ML / Deep Learning
-tensorflow==2.15.0
-
-# Scientific computing
-numpy==1.26.4
-scipy==1.11.4
+# --- Core Deep Learning & ML ---
+tensorflow==2.18.0
+numpy==1.26.4               
 pandas==2.2.2
+scikit-learn==1.5.0
 
-# Machine learning utilities
-scikit-learn==1.4.2
+# --- Explainable AI (XAI) ---
+shap==0.45.1                
 
-# ECG data handling
-wfdb==4.1.2
-
-# Visualization
-matplotlib==3.8.4
+# --- Interactive Dashboard & Viz ---
+streamlit==1.40.0
+plotly==5.22.0
+matplotlib==3.9.0
 seaborn==0.13.2
 
-# Web app
-streamlit==1.33.0
+# --- Medical Signal Processing ---
+wfdb==4.1.2
+biosppy==0.12.1
+heartpy==1.2.7
 
-# Optional (for notebook / development)
+# --- Development ---
 jupyter==1.0.0
 ipykernel==6.29.4

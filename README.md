@@ -1,6 +1,6 @@
 # 🫀 ECG Arrhythmia Classification with Explainable AI Dashboard
 
-An end-to-end **ECG Arrhythmia Classification system** combining **deep learning**, **Explainable AI (Grad-CAM)**, and an interactive **Streamlit dashboard**.
+An end-to-end **ECG Arrhythmia Classification system** combining **deep learning**, **Explainable AI (Grad-CAM + SHAP)**, and an interactive **Streamlit dashboard**.
 
 This system not only predicts arrhythmia classes but also **explains model decisions by highlighting important regions of the ECG signal**, improving transparency and clinical relevance.
 
@@ -10,7 +10,8 @@ This system not only predicts arrhythmia classes but also **explains model decis
 
 * Multi-class ECG classification using **AAMI-standard grouped classes**
 * 1D CNN optimized for **temporal signal learning**
-* **Grad-CAM visualization** for interpretability
+* **Grad-CAM visualization** for class-level interpretability
+* **SHAP feature attribution** for sample-level explanation
 * Interactive **Streamlit dashboard**
 * Real-time ECG upload, prediction, and explanation
 * End-to-end pipeline from raw signal → prediction → explanation
@@ -20,16 +21,32 @@ This system not only predicts arrhythmia classes but also **explains model decis
 ## 🧠 Project Workflow
 
 ```text
-Raw ECG → Filtering → Segmentation → Label Mapping → CNN → Prediction → Grad-CAM → Dashboard
+Raw ECG → Filtering → Segmentation → Label Mapping → CNN → Prediction → Grad-CAM / SHAP → Dashboard
 ```
 
 ---
 
 ## 📂 Dataset
 
-This project uses the MIT-BIH Arrhythmia Database from PhysioNet:
+This project uses the **MIT-BIH Arrhythmia Database** from PhysioNet.
 
-🔗 [https://physionet.org/content/mitdb/](https://physionet.org/content/mitdb/)
+* **URL:** [https://physionet.org/content/mitdb/](https://physionet.org/content/mitdb/)
+
+---
+
+## 📜 Citations & Acknowledgments
+
+When using this resource or the associated models, please cite the following original publications:
+
+### Primary Dataset Citation
+>
+> Moody, G. B., & Mark, R. G. (2001). **The impact of the MIT-BIH Arrhythmia Database.** *IEEE Engineering in Medicine and Biology Magazine*, 20(3), 45-50. PMID: 11446209.
+
+### PhysioNet Resource Citation
+>
+> Goldberger, A., Amaral, L., Glass, L., Hausdorff, J., Ivanov, P. C., Mark, R., ... & Stanley, H. E. (2000). **PhysioBank, PhysioToolkit, and PhysioNet: Components of a new research resource for complex physiologic signals.** *Circulation* [Online]. 101 (23), pp. e215–e220. RRID:SCR_007345.
+
+---
 
 ### Download Dataset
 
@@ -97,11 +114,17 @@ Dense → Dropout → Softmax
 
 ---
 
-## 🔍 Explainability (Grad-CAM)
+## 🔍 Explainability
 
-Grad-CAM computes gradients of the target class score with respect to feature maps in the final convolutional layer.
+### Grad-CAM
 
-This produces a **temporal importance map** highlighting which parts of the ECG signal influenced the prediction.
+Grad-CAM computes gradients of the target class score with respect to feature maps in the final convolutional layer, producing a **temporal importance map** highlighting which parts of the ECG signal influenced the prediction.
+
+### SHAP (SHapley Additive exPlanations)
+
+SHAP uses a `GradientExplainer` with a zero-signal baseline to compute the **exact numerical contribution of each time point** to the predicted class. This complements Grad-CAM by providing sample-level, directional attribution (positive = pushes toward prediction, negative = pushes against).
+
+> ⚠️ **Implementation note:** The model has a single input layer, so background and input signals must be passed as plain NumPy arrays — no list wrapping. The explainer returns shape `(1, 216, 1, 5)` i.e. `(batch, timesteps, channels, n_classes)` — the class axis is last. Extract with `shap_values[0, :, 0, pred_idx]`.
 
 ### Key Observations
 
@@ -159,6 +182,10 @@ This produces a **temporal importance map** highlighting which parts of the ECG 
 ```text
 ├── model_training.ipynb
 ├── preprocessing.py
+├── models/
+│   ├── cnn_ecg_best.keras
+│   └── cnn_ecg_final.keras
+│
 ├── app/
 │   ├── app.py
 │   └── sample_ecg.csv
@@ -169,6 +196,8 @@ This produces a **temporal importance map** highlighting which parts of the ECG 
 ├── requirements.txt
 └── README.md
 ```
+
+> ⚠️ **Note:** The `models/` folder sits at the project root, one level above `app/`. The app resolves the model path automatically using `os.path.dirname(os.path.abspath(__file__))` + `../models/`.
 
 ---
 
@@ -250,19 +279,20 @@ app/sample_ecg.csv
 4. View:
 
    * ECG waveform
-   * Predicted class
-   * Confidence scores
-   * Grad-CAM visualization
+   * Predicted class & confidence
+   * Probability distribution across all 5 classes
+   * SHAP feature attribution (enable via sidebar checkbox)
+   * Automated clinical summary for all 5 arrhythmia classes
 
 ---
 
 ## 🛠 Tech Stack
 
-* Python
-* TensorFlow / Keras
-* NumPy, Pandas
-* SciPy
-* Matplotlib
+* Python 3.11
+* TensorFlow 2.18 / Keras 3
+* NumPy, Pandas, SciPy
+* SHAP (`GradientExplainer`)
+* Matplotlib, Seaborn, Plotly
 * Streamlit
 * WFDB
 
@@ -298,7 +328,7 @@ To reproduce:
 This project integrates:
 
 * Deep learning for ECG classification
-* Explainable AI (Grad-CAM)
+* Explainable AI (Grad-CAM + SHAP)
 * Interactive deployment
 
 to create a system that is both **accurate and interpretable**, suitable for:
@@ -308,4 +338,3 @@ to create a system that is both **accurate and interpretable**, suitable for:
 * Educational tools
 
 ---
-
