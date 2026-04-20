@@ -12,6 +12,8 @@ This system not only predicts arrhythmia classes but also **explains model decis
 * 1D CNN optimized for **temporal signal learning**
 * **Grad-CAM visualization** for class-level interpretability
 * **SHAP feature attribution** for sample-level explanation
+* **Automatic beat segmentation** from raw multi-beat ECG signals
+* **Majority voting** across all detected beats for signal-level diagnosis
 * Interactive **Streamlit dashboard**
 * Real-time ECG upload, prediction, and explanation
 * Full pipeline implemented in a **single Jupyter Notebook**
@@ -22,7 +24,7 @@ This system not only predicts arrhythmia classes but also **explains model decis
 ## 🧠 Project Workflow
 
 ```text
-Raw ECG → Filtering → Segmentation → Label Mapping → CNN → Prediction → Grad-CAM / SHAP → Dashboard
+Raw ECG → Bandpass Filter → R-peak Detection → Beat Segmentation → CNN → Per-Beat Classification → Majority Vote → Dashboard
 ```
 
 ---
@@ -198,7 +200,7 @@ Mean absolute SHAP value per timestep averaged over up to 30 correctly classifie
 │
 ├── app/
 │   ├── app.py                  ← Streamlit dashboard
-│   └── sample_ecg.csv          ← Test signal for quick demo
+│   └── sample_ecg.csv          ← Synthetic 15s test signal (360 Hz, single column)
 │
 ├── images/
 │   ├── confusion_matrix_normalised.png   ← Publication Figure 1
@@ -258,7 +260,18 @@ streamlit run app/app.py
 
 ### 3. Test the App
 
-Upload a CSV:
+Upload `app/sample_ecg.csv` — a synthetic 15-second, 360 Hz signal containing 18 beats across 4 classes:
+
+| Type | Count | Description |
+|------|-------|-------------|
+| N    | 13    | Normal sinus beats — majority class |
+| V    | 2     | Ventricular ectopic — wide QRS, no P wave |
+| S    | 2     | Supraventricular — early P', narrow QRS |
+| F    | 1     | Fusion — intermediate normal/ectopic morphology |
+
+The expected dashboard output is a **Normal majority vote** (13/18 beats) with an **incidental finding warning** flagging the 2 × Ventricular and 2 × Supraventricular beats — demonstrating the pipeline's ability to surface minority abnormalities even in a predominantly normal signal.
+
+Or provide your own signal in CSV format:
 
 ```csv
 ecg
@@ -268,26 +281,23 @@ ecg
 ...
 ```
 
-Or use:
-
-```
-app/sample_ecg.csv
-```
+The signal must be a **single numeric column sampled at 360 Hz**. The app will automatically filter, detect R-peaks, segment beats, and classify each one.
 
 ---
 
 ## 🧪 Usage
 
 1. Launch the Streamlit app
-2. Upload ECG CSV (single column)
-3. Select ECG column
+2. Upload ECG CSV (single column, 360 Hz)
+3. Select the ECG column from the sidebar
 4. View:
 
-   * ECG waveform
-   * Predicted class & confidence
-   * Probability distribution across all 5 classes
-   * SHAP feature attribution (enable via sidebar checkbox)
-   * Automated clinical summary for all 5 arrhythmia classes
+   * Full signal waveform with per-beat annotations coloured by class
+   * Per-beat classification table with confidence scores
+   * Majority vote result and beat count breakdown
+   * Mean probability distribution across all 5 classes
+   * SHAP feature attribution for the representative beat (enable via sidebar)
+   * Automated clinical summary with incidental finding alerts
 
 ---
 
@@ -323,6 +333,7 @@ This project integrates:
 
 * Deep learning for ECG classification
 * Explainable AI (Grad-CAM + SHAP)
+* Automatic beat segmentation and majority voting
 * Interactive deployment
 
 to create a system that is both **accurate and interpretable**, suitable for:
