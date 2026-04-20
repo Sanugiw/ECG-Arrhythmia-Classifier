@@ -1,3 +1,6 @@
+Only the parts that changed are updated — the visualization section (new figures), repository structure (new image files), and the future improvements section is removed since the project is now complete. Everything else stays as-is:
+
+```markdown
 # 🫀 ECG Arrhythmia Classification with Explainable AI Dashboard
 
 An end-to-end **ECG Arrhythmia Classification system** combining **deep learning**, **Explainable AI (Grad-CAM + SHAP)**, and an interactive **Streamlit dashboard**.
@@ -15,6 +18,7 @@ This system not only predicts arrhythmia classes but also **explains model decis
 * Interactive **Streamlit dashboard**
 * Real-time ECG upload, prediction, and explanation
 * Full pipeline implemented in a **single Jupyter Notebook**
+* **Publication-ready figures** — normalised confusion matrix, per-class Grad-CAM heatmaps, and mean SHAP attribution plots saved at 300 DPI
 
 ---
 
@@ -162,27 +166,47 @@ SHAP uses a `GradientExplainer` with a zero-signal baseline to compute the **exa
 
 ---
 
-## 📈 Visualization
+## 📈 Publication-Ready Figures
 
-![Grad-CAM Visualization](images/gradcam_results.png)
+Three figures are generated and saved to `images/` at 300 DPI by the notebook:
+
+### Figure 1 — Normalised Confusion Matrix
+![Normalised Confusion Matrix](images/confusion_matrix_normalised.png)
+
+Each cell shows the proportion of predictions alongside the raw count `(n=...)`, with row-wise normalisation so class imbalance does not skew the visual.
+
+---
+
+### Figure 2 — Per-Class Grad-CAM Heatmaps
+![Grad-CAM per Class](images/gradcam_per_class.png)
+
+Mean Grad-CAM heatmap averaged over up to 50 correctly classified beats per class. The jet colormap encodes attention intensity — red regions indicate where the model focused most when making its decision.
+
+---
+
+### Figure 3 — Mean Absolute SHAP Attribution per Class
+![Mean SHAP per Class](images/shap_mean_per_class.png)
+
+Mean absolute SHAP value per timestep averaged over up to 30 correctly classified beats per class. The top-3 most important timesteps are annotated. This reveals which regions of the 216-sample window (centred on the R-peak) are the primary decision drivers for each arrhythmia type.
 
 ---
 
 ## 📁 Repository Structure
 
 ```text
-├── model_training.ipynb
-├── preprocessing.py
+├── model_training.ipynb        ← Full training, evaluation & figure generation
 ├── models/
-│   ├── cnn_ecg_best.keras
-│   └── cnn_ecg_final.keras
+│   ├── cnn_ecg_best.keras      ← Best checkpoint (used by app)
+│   └── cnn_ecg_final.keras     ← Final epoch weights
 │
 ├── app/
-│   ├── app.py
-│   └── sample_ecg.csv
+│   ├── app.py                  ← Streamlit dashboard
+│   └── sample_ecg.csv          ← Test signal for quick demo
 │
 ├── images/
-│   └── gradcam_results.png
+│   ├── confusion_matrix_normalised.png   ← Publication Figure 1
+│   ├── gradcam_per_class.png             ← Publication Figure 2
+│   └── shap_mean_per_class.png           ← Publication Figure 3
 │
 ├── requirements.txt
 └── README.md
@@ -218,13 +242,12 @@ model_training.ipynb
 
 Run all cells to:
 
-* Load ECG data
-* Preprocess signals
-* Extract beats
-* Map labels
-* Train CNN model
+* Load and preprocess ECG data
+* Segment and label beats
+* Train the 1D CNN
 * Evaluate performance
-* Save trained model
+* Generate and save all three publication-ready figures
+* Save the trained model
 
 ---
 
@@ -293,7 +316,7 @@ To reproduce:
 
 1. Download the dataset
 2. Run all cells in `model_training.ipynb`
-3. Launch Streamlit app
+3. Launch the Streamlit app
 
 ---
 
@@ -312,3 +335,4 @@ to create a system that is both **accurate and interpretable**, suitable for:
 * Educational tools
 
 ---
+```
