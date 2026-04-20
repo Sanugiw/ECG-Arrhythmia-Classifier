@@ -1,6 +1,3 @@
-Only the parts that changed are updated — the visualization section (new figures), repository structure (new image files), and the future improvements section is removed since the project is now complete. Everything else stays as-is:
-
-```markdown
 # 🫀 ECG Arrhythmia Classification with Explainable AI Dashboard
 
 An end-to-end **ECG Arrhythmia Classification system** combining **deep learning**, **Explainable AI (Grad-CAM + SHAP)**, and an interactive **Streamlit dashboard**.
@@ -335,4 +332,3 @@ to create a system that is both **accurate and interpretable**, suitable for:
 * Educational tools
 
 ---
-```
