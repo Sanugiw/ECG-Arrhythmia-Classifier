@@ -14,7 +14,7 @@ This system not only predicts arrhythmia classes but also **explains model decis
 * **SHAP feature attribution** for sample-level explanation
 * Interactive **Streamlit dashboard**
 * Real-time ECG upload, prediction, and explanation
-* End-to-end pipeline from raw signal → prediction → explanation
+* Full pipeline implemented in a **single Jupyter Notebook**
 
 ---
 
@@ -59,8 +59,8 @@ wfdb.dl_database("mitdb", "data/raw/mitdb")
 ### Or Stream Directly
 
 ```python
-record = wfdb.rdrecord('100', pn_dir='mitdb')
-annotation = wfdb.rdann('100', 'atr', pn_dir='mitdb')
+record = wfdb.rdrecord("100", pn_dir="mitdb")
+annotation = wfdb.rdann("100", "atr", pn_dir="mitdb")
 ```
 
 > ⚠️ Dataset is not included in this repository due to size constraints.
@@ -69,7 +69,7 @@ annotation = wfdb.rdann('100', 'atr', pn_dir='mitdb')
 
 ## 🧪 Data Preprocessing
 
-* Bandpass filtering applied (**0.5–40 Hz**)
+* Bandpass filtering (**0.5–40 Hz**)
 * R-peak based segmentation:
 
   * **0.2 s before R-peak**
@@ -95,7 +95,7 @@ Raw MIT-BIH annotations (23 classes) are grouped into 5 clinically meaningful ca
 
 ## 🧠 Model Architecture (1D CNN)
 
-```text
+```
 Conv1D → BatchNorm → MaxPooling  
 Conv1D → BatchNorm → MaxPooling  
 Conv1D → BatchNorm → GlobalAvgPooling  
@@ -110,7 +110,7 @@ Dense → Dropout → Softmax
 * Batch size: **64**
 * Epochs: **30 (Early stopping applied)**
 * Class imbalance handled using **class weights**
-* Train/Validation/Test split: **80 / 10 / 10 (stratified)**
+* Train / Validation / Test split: **80 / 10 / 10 (stratified)**
 
 ---
 
@@ -162,15 +162,6 @@ SHAP uses a `GradientExplainer` with a zero-signal baseline to compute the **exa
 
 ---
 
-### 🔍 Key Insights
-
-* Strong performance on **N and Q classes**
-* High recall for **ventricular beats (V)**
-* Confusion between **S and N** due to similar morphology
-* Lower performance for **F** due to limited samples
-
----
-
 ## 📈 Visualization
 
 ![Grad-CAM Visualization](images/gradcam_results.png)
@@ -215,35 +206,29 @@ pip install -r requirements.txt
 
 ---
 
-## 🚀 End-to-End Pipeline
+## 🚀 How to Run
 
-### 1. Preprocess Data
+### 1. Run the Notebook
 
-```bash
-python preprocessing.py
+Open:
+
+```
+model_training.ipynb
 ```
 
-Generates:
+Run all cells to:
 
-* `data/processed/beats.npy`
-* `data/processed/labels.npy`
+* Load ECG data
+* Preprocess signals
+* Extract beats
+* Map labels
+* Train CNN model
+* Evaluate performance
+* Save trained model
 
 ---
 
-### 2. Train Model
-
-```bash
-python model_training/train_model.py
-```
-
-Outputs:
-
-* `models/cnn_ecg_best.keras`
-* `models/cnn_ecg_final.keras`
-
----
-
-### 3. Run the App
+### 2. Run the App
 
 ```bash
 streamlit run app/app.py
@@ -251,7 +236,7 @@ streamlit run app/app.py
 
 ---
 
-### 4. Test the App
+### 3. Test the App
 
 Upload a CSV:
 
@@ -273,7 +258,7 @@ app/sample_ecg.csv
 
 ## 🧪 Usage
 
-1. Launch Streamlit app
+1. Launch the Streamlit app
 2. Upload ECG CSV (single column)
 3. Select ECG column
 4. View:
@@ -306,20 +291,9 @@ app/sample_ecg.csv
 
 To reproduce:
 
-1. Download dataset
-2. Run preprocessing
-3. Train model
-
----
-
-## 🔮 Future Improvements
-
-* Multi-lead ECG support
-* Transformer-based architectures
-* Attention mechanisms for better interpretability
-* Patient-wise split to avoid data leakage
-* Real-time ECG streaming
-* Cloud deployment (Streamlit Cloud / Hugging Face Spaces)
+1. Download the dataset
+2. Run all cells in `model_training.ipynb`
+3. Launch Streamlit app
 
 ---
 
