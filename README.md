@@ -127,8 +127,6 @@ Grad-CAM computes gradients of the target class score with respect to feature ma
 
 SHAP uses a `GradientExplainer` with a zero-signal baseline to compute the **exact numerical contribution of each time point** to the predicted class. This complements Grad-CAM by providing sample-level, directional attribution (positive = pushes toward prediction, negative = pushes against).
 
-> ⚠️ **Implementation note:** The model has a single input layer, so background and input signals must be passed as plain NumPy arrays — no list wrapping. The explainer returns shape `(1, 216, 1, 5)` i.e. `(batch, timesteps, channels, n_classes)` — the class axis is last. Extract with `shap_values[0, :, 0, pred_idx]`.
-
 ### Key Observations
 
 * **N (Normal):** Focus on sharp QRS complex
@@ -172,7 +170,7 @@ Three figures are generated and saved to `images/` at 300 DPI by the notebook:
 ### Figure 1 — Normalised Confusion Matrix
 ![Normalised Confusion Matrix](images/confusion_matrix_normalised.png)
 
-Each cell shows the proportion of predictions alongside the raw count `(n=...)`, with row-wise normalisation so class imbalance does not skew the visual.
+Each cell shows the proportion of predictions alongside the raw count (n=...)`, with row-wise normalisation so class imbalance does not skew the visual.
 
 ---
 
@@ -203,9 +201,9 @@ Mean absolute SHAP value per timestep averaged over up to 30 correctly classifie
 │   └── sample_ecg.csv          ← Synthetic 15s test signal (360 Hz, single column)
 │
 ├── images/
-│   ├── confusion_matrix_normalised.png   ← Publication Figure 1
-│   ├── gradcam_per_class.png             ← Publication Figure 2
-│   └── shap_mean_per_class.png           ← Publication Figure 3
+│   ├── confusion_matrix_normalised.png   
+│   ├── gradcam_per_class.png             
+│   └── shap_mean_per_class.png           
 │
 ├── requirements.txt
 └── README.md
