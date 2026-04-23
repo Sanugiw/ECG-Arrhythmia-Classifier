@@ -258,16 +258,7 @@ streamlit run app/app.py
 
 ### 3. Test the App
 
-Upload `app/sample_ecg.csv` — a synthetic 15-second, 360 Hz signal containing 18 beats across 4 classes:
-
-| Type | Count | Description |
-|------|-------|-------------|
-| N    | 13    | Normal sinus beats — majority class |
-| V    | 2     | Ventricular ectopic — wide QRS, no P wave |
-| S    | 2     | Supraventricular — early P', narrow QRS |
-| F    | 1     | Fusion — intermediate normal/ectopic morphology |
-
-The expected dashboard output is a **Normal majority vote** (13/18 beats) with an **incidental finding warning** flagging the 2 × Ventricular and 2 × Supraventricular beats — demonstrating the pipeline's ability to surface minority abnormalities even in a predominantly normal signal.
+Upload `app/sample_ecg.csv` — a synthetic 15-second, 360 Hz signal containing 18 beats.
 
 Or provide your own signal in CSV format:
 
