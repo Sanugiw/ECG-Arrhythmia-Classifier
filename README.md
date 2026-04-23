@@ -1,10 +1,3 @@
-Here is your `README.md` completely updated to reflect these final, specific requirements. 
-
-I have explicitly added the detailed **accuracy metrics table**, highlighted the **normalized confusion matrix**, seamlessly integrated the **two exact academic citations** for the MIT-BIH dataset, and added a dedicated section explaining exactly how to use the `app/sample_ecg.csv` file to test the dashboard.
-
-You can copy and paste this directly into your GitHub repository:
-
-```markdown
 # 🫀 ECG Arrhythmia Classification with Explainable AI Dashboard
 
 An end-to-end **ECG Arrhythmia Classification system** combining **deep learning**, **Explainable AI (Grad-CAM + SHAP)**, and an interactive **Streamlit dashboard**.
@@ -129,4 +122,3 @@ To immediately test the dashboard's capabilities without needing your own clinic
 1. Download the MIT-BIH dataset to `data/raw/mitdb/`.
 2. Run all cells in `model_training.ipynb` to process the data, train the CNN, and generate the XAI metrics.
 3. Launch the dashboard via `streamlit run app.py`.
-```
