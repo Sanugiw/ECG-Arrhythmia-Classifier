@@ -61,13 +61,41 @@ def bandpass_filter(signal: np.ndarray, fs: int = SAMPLING_RATE,
 
 def detect_rpeaks(signal: np.ndarray, fs: int = SAMPLING_RATE) -> np.ndarray:
     """
-    Simple R-peak detector using scipy find_peaks.
-    Works on a filtered signal. Returns sample indices.
+    Robust R-peak detector implementing the core Pan-Tompkins steps.
+    Assumes the signal is already bandpass filtered (Step 1).
     """
-    min_distance = int(0.3 * fs)          # minimum 300 ms between beats (~200 BPM max)
-    height       = np.mean(signal) + 0.3 * np.std(signal)
-    peaks, _     = find_peaks(signal, distance=min_distance, height=height)
-    return peaks
+    # Step 2: Derivative (Highlights steep QRS slopes)
+    derivative = np.gradient(signal)
+    
+    # Step 3: Squaring (Amplifies QRS, suppresses P/T waves)
+    squared = derivative ** 2
+    
+    # Step 4: Moving Average Integration (Creates smooth 'lumps' over QRS)
+    # Window size is typically 150ms
+    window_size = int(0.150 * fs)
+    integrated = np.convolve(squared, np.ones(window_size)/window_size, mode='same')
+    
+    # Step 5: Adaptive Thresholding & Peak Finding
+    # We find peaks on the smooth 'integrated' signal
+    min_distance = int(0.3 * fs)  # minimum 300 ms between beats
+    # Dynamic threshold: mean + 0.5 * std of the integrated signal
+    threshold = np.mean(integrated) + 0.5 * np.std(integrated)
+    
+    peaks, _ = find_peaks(integrated, distance=min_distance, height=threshold)
+    
+    # Note: 'peaks' currently point to the center of the integrated lump.
+    # To find the exact peak on the original filtered signal, we search a small
+    # window around each detected lump.
+    exact_peaks = []
+    search_radius = int(0.05 * fs) # 50ms search radius
+    for p in peaks:
+        start = max(0, p - search_radius)
+        end = min(len(signal), p + search_radius)
+        # Find the max index within this local window
+        exact_peak = start + np.argmax(signal[start:end])
+        exact_peaks.append(exact_peak)
+        
+    return np.array(exact_peaks)
 
 def segment_beats(signal: np.ndarray, r_peaks: np.ndarray) -> tuple:
     """
