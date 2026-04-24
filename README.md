@@ -47,7 +47,7 @@ The model has been rigorously evaluated on a held-out test set from the MIT-BIH 
 
 *Note: A **Normalized Confusion Matrix** is generated during model training (saved at 300 DPI). It mathematically illustrates that the model's rare misclassifications occur primarily between physiologically and structurally similar classes (e.g., Fusion beats naturally sharing morphology with Normal and Ventricular beats).*
 
-![Normalized Confusion Matrix](images/confusion_matrix.png)
+![Normalized Confusion Matrix](images/confusion_matrix_normalised.png)
 
 ### Quantitative Explainability (XAI)
 To prove the model does not rely on spurious dataset artifacts, XAI outputs were mathematically quantified against established cardiology guidelines:
